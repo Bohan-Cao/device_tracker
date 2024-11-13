@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import TableComponent from "./TableComponent";
 import './App.css';
+import {FaThermometerHalf, FaLightbulb, FaRunning, FaClock} from "react-icons/fa";
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -119,29 +120,24 @@ const App = () => {
   };
 
   // Function to fetch sorted data
-  const fetchSortedData = () => {
+  const fetchSortedData = (sortColumn, sortOrder) => {
     if (!data || data.length === 0) {
       console.log("No data available to sort.");
       return;
     }
   
-    setLoading(true);
-  
     const sortedData = [...data].sort((a, b) => {
-      const column = filters.sort_column;
-      const order = filters.sort_order === "ASC" ? 1 : -1;
+      const order = sortOrder === "ASC" ? 1 : -1;
   
-      // Compare values based on the column and sort order
-      if (a[column] < b[column]) return -1 * order;
-      if (a[column] > b[column]) return 1 * order;
-      return 0; // Equal values
+      if (a[sortColumn] < b[sortColumn]) return -1 * order;
+      if (a[sortColumn] > b[sortColumn]) return 1 * order;
+      return 0;
     });
   
-    console.log("Sorted Data Locally:", sortedData);
-  
-    setData(sortedData);
-    setLoading(false);
+    console.log("Sorted Data:", sortedData);
+    setData(sortedData); // Update the table with sorted data
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -245,11 +241,79 @@ const App = () => {
         <p>Loading data...</p>
       ) : (
         <>
-          <TableComponent data={data} />
+          <TableComponent data={data} onSort={fetchSortedData} />
+
           {summary && (
-            <div style={{ marginTop: "20px" }}>
-              <h2>Summary</h2>
-              <pre>{JSON.stringify(summary, null, 2)}</pre>
+            <div
+              style={{
+                marginTop: "20px",
+                backgroundColor: "#f9f9f9",
+                padding: "15px",
+                borderRadius: "8px",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <h2 style={{ color: "#007bff", marginBottom: "15px" }}>Summary</h2>
+              <div>
+                <p>
+                  <strong>Record Count:</strong> {summary.record_count}
+                </p>
+
+                <h4>
+                  <FaThermometerHalf style={{ color: "#ff6f61", marginRight: "8px" }} />
+                  Temperature
+                </h4>
+                <p>
+                  <strong>Min:</strong> {summary.temperature.min}
+                </p>
+                <p>
+                  <strong>Max:</strong> {summary.temperature.max}
+                </p>
+                <p>
+                  <strong>Avg:</strong> {summary.temperature.avg.toFixed(2)}
+                </p>
+
+                <h4>
+                  <FaRunning style={{ color: "#6f42c1", marginRight: "8px" }} />
+                  Motion
+                </h4>
+                <p>
+                  <strong>Min:</strong> {summary.motion.min}
+                </p>
+                <p>
+                  <strong>Max:</strong> {summary.motion.max}
+                </p>
+                <p>
+                  <strong>Avg:</strong> {summary.motion.avg.toFixed(2)}
+                </p>
+
+                <h4>
+                  <FaLightbulb style={{ color: "#ffc107", marginRight: "8px" }} />
+                  Light
+                </h4>
+                <p>
+                  <strong>Min:</strong> {summary.light.min}
+                </p>
+                <p>
+                  <strong>Max:</strong> {summary.light.max}
+                </p>
+                <p>
+                  <strong>Avg:</strong> {summary.light.avg.toFixed(2)}
+                </p>
+
+                <h4>
+                  <FaClock style={{ color: "#17a2b8", marginRight: "8px" }} />
+                  Timestamp Range
+                </h4>
+                <p>
+                  <strong>Earliest:</strong>{" "}
+                  {new Date(summary.timestamp_range.earliest).toLocaleString()}
+                </p>
+                <p>
+                  <strong>Latest:</strong>{" "}
+                  {new Date(summary.timestamp_range.latest).toLocaleString()}
+                </p>
+              </div>
             </div>
           )}
         </>

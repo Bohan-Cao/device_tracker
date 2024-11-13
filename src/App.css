@@ -76,6 +76,25 @@ table th {
   color: #fff;
   font-weight: bold;
   text-transform: uppercase;
+  cursor: pointer; /* Indicate that the column is clickable */
+  position: relative; /* For sort icon positioning */
+}
+
+table th:hover {
+  background-color: #0056b3; /* Highlight header on hover */
+}
+
+table th .sort-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+table th .sort-icon.active {
+  opacity: 1;
 }
 
 table tr:nth-child(even) {
@@ -106,4 +125,29 @@ pre {
   font-size: 14px;
   color: #333;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Adjust summary icons and layout */
+h4 {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  margin-top: 15px;
+  color: #333;
+}
+
+h4 svg {
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+/* Arrow icons for sortable columns */
+.arrow {
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.arrow.up {
+  transform: rotate(180deg);
 }
